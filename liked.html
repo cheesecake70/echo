@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">My Liked Songs</h2>
+
+{% if liked_songs %}
+    <ul class="list-group">
+        {% for song in liked_songs %}
+            <li class="list-group-item">
+                <strong>{{ song.name }}</strong> — <em>{{ song.artist_id }}</em>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="alert alert-info">No liked songs yet. Like some recommendations and then come back.</div>
+{% endif %}
+{% endblock %}
