@@ -1,0 +1,46 @@
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 300px;
+        }
+
+        button {
+            padding: 6px 12px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 15px;
+        }
+
+        .song-card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+        }
+
+        .feedback-buttons button {
+            margin-right: 10px;
+        }
+
+        .more-btn {
+            margin-top: 20px;
+        }
+        

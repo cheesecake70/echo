@@ -1,0 +1,10 @@
+{
+    "name": "default",
+    "danceability": 2.4779000000000018,
+    "energy": 2.187099999999999,
+    "valence": 2.331229999999998,
+    "tempo": 1.4872750000000015,
+    "loudness": -5.144500000000002,
+    "speechiness": 1.2242200000000019,
+    "liked_songs": ["Shape of You"]
+}
