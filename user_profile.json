@@ -1,0 +1,24 @@
+{
+    "name": "default",
+    "danceability": 3.426500000000002,
+    "energy": 3.024399999999999,
+    "valence": 2.935029999999999,
+    "tempo": 2.2377350000000016,
+    "loudness": -12.864500000000001,
+    "speechiness": 1.3138200000000013,
+    "liked_songs": [
+        "Shape of You",
+        "In My Feelings",
+        "God is a woman",
+        "Jackie Chan",
+        "Fuck Love (feat. Trippie Redd)",
+        "All The Stars (with SZA)",
+        "IDGAF",
+        "Taste (feat. Offset)",
+        "changes",
+        "1, 2, 3 (feat. Jason Derulo & De La Ghetto)",
+        "Believer",
+        "Solo (feat. Demi Lovato)",
+        "Love Lies (with Normani)"
+    ]
+}

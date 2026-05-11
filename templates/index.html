@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+    function disablePair(form) {
+        const container = form.closest('.feedback-buttons');
+        if (container) {
+            container.querySelectorAll('button').forEach(b => b.disabled = true);
+        }
+    }
+</script>
+
+<!-- ===============================
+     Song input form (autocomplete)
+     =============================== -->
+<form method="POST" class="mb-4">
+    <input
+        type="text"
+        name="song_title"
+        list="songs"
+        placeholder="Start typing a song name..."
+        required
+        autocomplete="on"
+        class="form-control"
+    >
+
+    <datalist id="songs">
+        {% for title in song_titles %}
+            <option value="{{ title }}"></option>
+        {% endfor %}
+    </datalist>
+
+    <button type="submit" class="btn btn-success mt-2">Get Recommendations</button>
+</form>
+
+<!-- Error message -->
+{% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<!-- ===============================
+     Recommendations section
+     =============================== -->
+{% if recommendations %}
+    <h2>Recommended Songs</h2>
+
+    {% for song in recommendations %}
+        <div class="card mb-3 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ song.title }}</strong><br>
+                    <span>Similarity: {{ ((song.similarity * 100) | round(0)) | int }}%</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <form method="POST"
+                          class="{% if song.title in feedbacked_songs %}feedbacked{% endif %}"
+                          onsubmit="disablePair(this)">
+                        <input type="hidden" name="rec_song_title" value="{{ song.title }}">
+                        <input type="hidden" name="base_song" value="{{ selected_song }}">
+                        <input type="hidden" name="top_n" value="{{ recommendations|length }}">
+                        <input type="hidden" name="feedback" value="like">
+                        <button type="submit" class="btn btn-primary"
+                                {% if song.title in feedbacked_songs %}disabled{% endif %}>
+                            👍 Like
+                        </button>
+                    </form>
+                    <form method="POST"
+                          class="{% if song.title in feedbacked_songs %}feedbacked{% endif %}"
+                          onsubmit="disablePair(this)">
+                        <input type="hidden" name="rec_song_title" value="{{ song.title }}">
+                        <input type="hidden" name="base_song" value="{{ selected_song }}">
+                        <input type="hidden" name="top_n" value="{{ recommendations|length }}">
+                        <input type="hidden" name="feedback" value="dislike">
+                        <button type="submit" class="btn btn-danger"
+                                {% if song.title in feedbacked_songs %}disabled{% endif %}>
+                            👎 Dislike
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- ===============================
+     More recommendations button
+     =============================== -->
+{% if show_more_button %}
+    <form method="POST" class="more-btn mt-3">
+        <input type="hidden" name="base_song" value="{{ selected_song }}">
+        <input type="hidden" name="top_n" value="{{ recommendations|length }}">
+        <button name="more" value="yes" class="btn btn-secondary">Show more recommendations</button>
+    </form>
+{% endif %}
+{% endblock %}
