@@ -20,8 +20,8 @@ def get_db_connection():
 def load_songs():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
-    songs = conn.execute("SELECT * FROM songs").fetchall()
-    conn.close()
+    songs = conn.execute("SELECT *, artists.name AS artist_name FROM songs JOIN artists ON songs.artist_id = artists.id").fetchall()
+    
     return [dict(song) for song in songs]
 
 def load_profile():
@@ -78,7 +78,7 @@ def recommend_songs(profile, song_title, top_n):
     for i, score in similarity_scores[1:top_n+1]:
         recommendations.append({
             "title": df.iloc[i]["name"],
-            "artist": df.iloc[i]["artist_id"],
+            "artist": df.iloc[i]["artist_name"],
             "similarity": round(score, 2)
         })
     return recommendations

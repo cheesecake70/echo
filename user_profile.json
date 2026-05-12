@@ -1,11 +1,11 @@
 {
     "name": "default",
-    "danceability": 3.426500000000002,
-    "energy": 3.024399999999999,
-    "valence": 2.935029999999999,
-    "tempo": 2.2377350000000016,
-    "loudness": -12.864500000000001,
-    "speechiness": 1.3138200000000013,
+    "danceability": 3.7583000000000024,
+    "energy": 3.2343999999999995,
+    "valence": 3.090029999999999,
+    "tempo": 2.441718000000001,
+    "loudness": -15.720400000000001,
+    "speechiness": 1.3772700000000013,
     "liked_songs": [
         "Shape of You",
         "In My Feelings",
@@ -19,6 +19,9 @@
         "1, 2, 3 (feat. Jason Derulo & De La Ghetto)",
         "Believer",
         "Solo (feat. Demi Lovato)",
-        "Love Lies (with Normani)"
+        "Love Lies (with Normani)",
+        "Ric Flair Drip (& Metro Boomin)",
+        "I Like Me Better",
+        "Girls Like You (feat. Cardi B)"
     ]
 }
