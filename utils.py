@@ -3,7 +3,8 @@ import sqlite3
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd 
-import numpy as np
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 DATABASE = "songs.db"
@@ -49,7 +50,7 @@ def save_profile(user_id, profile):
     ))
     db.commit()
     db.close()
-    
+
 
 
 def recommend_songs(profile, song_title, top_n):
@@ -121,3 +122,24 @@ def get_liked_songs(user_id):
     conn.close()
     return [dict(r) for r in rows]
 
+def register_user(username, password):
+    conn = get_db_connection()
+    try:
+        conn.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)",
+                     (username, generate_password_hash(password)))
+        user_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
+        conn.execute("INSERT INTO user_profiles (user_id) VALUES (?)", (user_id,))
+        conn.commit()
+        return {"success": True, "user_id": user_id}
+    except sqlite3.IntegrityError:
+        return {"success": False, "error": "Username already taken."}
+    finally:
+        conn.close()
+
+def verify_password(username, password):
+    conn = get_db_connexction()
+    user = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+    conn.close()
+    if user and check_password_hash(user["password_hash"], password):
+        return dict(user)
+    return None
