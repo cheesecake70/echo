@@ -1,11 +1,11 @@
 {
     "name": "default",
-    "danceability": 3.7583000000000024,
-    "energy": 3.2343999999999995,
-    "valence": 3.090029999999999,
-    "tempo": 2.441718000000001,
-    "loudness": -15.720400000000001,
-    "speechiness": 1.3772700000000013,
+    "danceability": 3.8381000000000025,
+    "energy": 3.2882999999999996,
+    "valence": 3.1294299999999993,
+    "tempo": 2.5101925000000014,
+    "loudness": -16.355500000000003,
+    "speechiness": 1.3814800000000014,
     "liked_songs": [
         "Shape of You",
         "In My Feelings",
@@ -22,6 +22,7 @@
         "Love Lies (with Normani)",
         "Ric Flair Drip (& Metro Boomin)",
         "I Like Me Better",
-        "Girls Like You (feat. Cardi B)"
+        "Girls Like You (feat. Cardi B)",
+        "Young Dumb & Broke"
     ]
 }
