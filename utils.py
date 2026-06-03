@@ -117,7 +117,6 @@ def get_liked_songs(user_id):
         JOIN songs   ON liked_songs.song_id  = songs.id
         JOIN artists ON songs.artist_id      = artists.id
         WHERE liked_songs.user_id = ?
-        ORDER BY liked_songs.liked_at DESC
     """, (user_id,)).fetchall()
     conn.close()
     return [dict(r) for r in rows]
@@ -125,7 +124,7 @@ def get_liked_songs(user_id):
 def register_user(username, password):
     conn = get_db_connection()
     try:
-        conn.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)",
+        conn.execute("INSERT INTO users (username, password) VALUES (?, ?)",
                      (username, generate_password_hash(password)))
         user_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
         conn.execute("INSERT INTO user_profiles (user_id) VALUES (?)", (user_id,))
@@ -137,7 +136,7 @@ def register_user(username, password):
         conn.close()
 
 def verify_password(username, password):
-    conn = get_db_connexction()
+    conn = get_db_connection()
     user = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
     conn.close()
     if user and check_password_hash(user["password_hash"], password):

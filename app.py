@@ -1,24 +1,81 @@
 # imports
-
-from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from functools import wraps
+from flask import Flask, render_template, request, session, redirect, url_for
 from utils import (
     load_songs,
     load_profile,
     recommend_songs,
     save_profile,
-    update_profile
+    update_profile,
+    get_liked_songs,
+    register_user,
+    verify_password
 )
-
 
 # configure application
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # Required for session to work
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user_id" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route("/register", methods=["GET","POST"])
+def register():
+    if "user_id" in session:
+        return redirect(url_for("index"))
+    error = None
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        confirm_password = request.form["confirm_password"]
+        if password != confirm_password:
+            error = "Passwords do not match. Please try again."
+            return render_template("register.html", error=error)
+        result=register_user(username, password)
+        if result["success"]:
+            session["user_id"] = result["user_id"]
+            return redirect(url_for("index"))
+        else:
+            error = "Username already exists. Please choose a different one."
+            return render_template("register.html", error=error)
+
+    return render_template("register.html")
+
+@app.route("/login",methods = ["GET","POST"])
+def login():
+    if "user_id" in session:
+        return redirect(url_for("index"))
+    error = None
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        user = verify_password(username, password)
+        if user:
+            session["user_id"] = user["id"]
+            return redirect(url_for("index"))
+        else:
+            error="Invalid username or password. Please try again."
+            return render_template("login.html", error=error)
+    return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+ 
+ 
 
 @app.route("/", methods=["GET", "POST"])
+@login_required
 def index():
     songs = load_songs()
-    profile = load_profile()
+    profile = load_profile(session["user_id"])
+
 
     song_titles = [song["name"] for song in songs]
 
@@ -65,7 +122,7 @@ def index():
                 return redirect(url_for('index'))
 
             profile = update_profile(profile, song, feedback)
-            save_profile(profile)
+            save_profile(session["user_id"], profile)
 
             # Store session state for page restoration
             session["last_song"] = selected_song
@@ -77,7 +134,7 @@ def index():
             session["feedbacked_songs"] = feedbacked
 
             # Verify the save
-            saved_profile = load_profile()
+            saved_profile = load_profile(session["user_id"])
             print(f"DEBUG: Feedback={feedback}, Song={rec_song_title}, Liked songs in saved profile: {saved_profile.get('liked_songs', [])}")
 
             # Redirect to refresh the page with updated data
@@ -103,20 +160,12 @@ def index():
         feedbacked_songs=feedbacked_songs
     )
 
-
 @app.route("/liked")
+@login_required
 def liked():
-    profile = load_profile()
-    liked_songs = profile.get("liked_songs", [])
-
-    if liked_songs:
-        songs = load_songs()
-        liked_songs_details = [song for song in songs if song["name"] in liked_songs]
-    else:
-        liked_songs_details = []
-
-    return render_template("liked.html", liked_songs=liked_songs_details)
-
+    liked_songs = get_liked_songs(session["user_id"])
+    return render_template("liked.html", liked_songs=liked_songs)
+    
 
 # run
 if __name__ == "__main__":
