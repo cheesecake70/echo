@@ -9,7 +9,6 @@ import numpy as np
 
 
 DATABASE = "songs.db"
-PROFILE_FILE = "user_profile.json"
 
 
 def get_db_connection():
@@ -25,27 +24,16 @@ def load_songs():
     return [dict(song) for song in songs]
 
 def load_profile():
-    # if profile doesn't exist
-    if not os.path.exists(PROFILE_FILE):
-        return {
-            "name": "default",
-            "danceability": 1.0,
-            "energy": 1.0,
-            "valence": 1.0,
-            "tempo": 1.0,
-            "loudness": 1.0,
-            "speechiness": 1.0,
-            "liked_songs": []
-        }
-    # if profile exists
-    with open(PROFILE_FILE, "r") as f:
-        profile = json.load(f)
-
-    return profile
+    db=get_db_connection()
+    userProfile=db.execute("SELECT * FROM user_profile JOIN ON users WHERE user.id=user_id") 
+    return [dict(profile) for profile in userProfile ]
 
 def save_profile(profile):
-    with open(PROFILE_FILE, "w") as f:
-        json.dump(profile, f, indent=4)
+    db=get_db_connection()
+    db.execute("INSERT INTO user_profile (danceability, energy, tempo, valence, loudness, speechiness) VALUES (?, ?, ?, ?, ?, ?)", 
+               (profile["danceability"], profile["energy"], profile["tempo"], profile["valence"], profile["loudness"], profile["speechiness"]))
+    db.commit()
+    
 
 
 def recommend_songs(profile, song_title, top_n):
@@ -95,8 +83,10 @@ def update_profile(profile, song, feedback):
     profile["speechiness"] += song["speechiness"] * change
 
     # track liked songs for the /liked page
+    db = get_db_connection()
+   
     if feedback == "like":
-        if song["name"] not in profile["liked_songs"]:
-            profile["liked_songs"].append(song["name"])
+        db.execute("INSERT INTO liked_songs (user_id, song_id) VALUES (?, ?)", (profile["id"], song["id"]))
+        db.commit()
 
     return profile
