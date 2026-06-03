@@ -1,7 +1,5 @@
 
 import sqlite3  
-import json
-import os
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd 
@@ -20,19 +18,37 @@ def load_songs():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     songs = conn.execute("SELECT *, artists.name AS artist_name FROM songs JOIN artists ON songs.artist_id = artists.id").fetchall()
-    
+    conn.close()
     return [dict(song) for song in songs]
 
-def load_profile():
-    db=get_db_connection()
-    userProfile=db.execute("SELECT * FROM user_profile JOIN ON users WHERE user.id=user_id") 
-    return [dict(profile) for profile in userProfile ]
+def load_profile(user_id):
+    db = get_db_connection()
+    profile = db.execute("SELECT * FROM user_profiles WHERE user_id = ?", (user_id,)).fetchone()
+    db.close()
+    return dict(profile)
 
-def save_profile(profile):
-    db=get_db_connection()
-    db.execute("INSERT INTO user_profile (danceability, energy, tempo, valence, loudness, speechiness) VALUES (?, ?, ?, ?, ?, ?)", 
-               (profile["danceability"], profile["energy"], profile["tempo"], profile["valence"], profile["loudness"], profile["speechiness"]))
+def save_profile(user_id, profile):
+    db = get_db_connection()
+    db.execute("""
+        UPDATE user_profiles SET
+            danceability = ?,
+            energy       = ?,
+            tempo        = ?,
+            valence      = ?,
+            loudness     = ?,
+            speechiness  = ?
+        WHERE user_id = ?
+    """, (
+        profile["danceability"],
+        profile["energy"],
+        profile["tempo"],
+        profile["valence"],
+        profile["loudness"],
+        profile["speechiness"],
+        user_id
+    ))
     db.commit()
+    db.close()
     
 
 
@@ -61,7 +77,6 @@ def recommend_songs(profile, song_title, top_n):
 
     similarity_scores = list(enumerate(similarity_matrix[idx]))
     similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
-    db=get_db_connection()
     recommendations = []
     for i, score in similarity_scores[1:top_n+1]:
         recommendations.append({
@@ -82,11 +97,27 @@ def update_profile(profile, song, feedback):
     profile["loudness"] += song["loudness"] * change
     profile["speechiness"] += song["speechiness"] * change
 
-    # track liked songs for the /liked page
-    db = get_db_connection()
-   
     if feedback == "like":
-        db.execute("INSERT INTO liked_songs (user_id, song_id) VALUES (?, ?)", (profile["id"], song["id"]))
+        db = get_db_connection()
+        db.execute(
+            "INSERT OR IGNORE INTO liked_songs (user_id, song_id) VALUES (?, ?)",
+            (profile["user_id"], song["id"])
+        )
         db.commit()
+        db.close()
 
     return profile
+
+def get_liked_songs(user_id):
+    conn = get_db_connection()
+    rows = conn.execute("""
+        SELECT songs.*, artists.name AS artist_name
+        FROM liked_songs
+        JOIN songs   ON liked_songs.song_id  = songs.id
+        JOIN artists ON songs.artist_id      = artists.id
+        WHERE liked_songs.user_id = ?
+        ORDER BY liked_songs.liked_at DESC
+    """, (user_id,)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
