@@ -137,8 +137,8 @@ def register_user(username, password):
 
 def verify_password(username, password):
     conn = get_db_connection()
-    user = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+    user = dict(conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone())
     conn.close()
-    if user and check_password_hash(user["password_hash"], password):
+    if user and check_password_hash((user["password"]), password):
         return dict(user)
     return None

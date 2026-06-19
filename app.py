@@ -52,8 +52,15 @@ def login():
         return redirect(url_for("index"))
     error = None
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        username = request.form.get("Username")
+        password = request.form.get("Password")
+        if not username:
+            error="no username"
+            return render_template("login.html", error=error)
+        elif not password:
+            error="no password"
+            return render_template("login.html", error=error)
+
         user = verify_password(username, password)
         if user:
             session["user_id"] = user["id"]
