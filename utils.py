@@ -83,7 +83,8 @@ def recommend_songs(profile, song_title, top_n):
         recommendations.append({
             "title": df.iloc[i]["name"],
             "artist": df.iloc[i]["artist_name"],
-            "similarity": round(score, 2)
+            "similarity": round(score, 2),
+            "link": df.iloc[i]["yt_link"]
         })
     return recommendations
 
