@@ -5,10 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
-
 DATABASE = "songs.db"
-
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)
@@ -16,18 +13,13 @@ def get_db_connection():
     return conn
 
 def load_songs():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
+    conn = get_db_connection()
     songs = conn.execute("SELECT *, artists.name AS artist_name FROM songs JOIN artists ON songs.artist_id = artists.id").fetchall()
     conn.close()
     return [dict(song) for song in songs]
 
 def load_profile(user_id):
     db = get_db_connection()
-    user = db.execute("SELECT id FROM users WHERE id = ?", (user_id,)).fetchone()
-    if user is None:
-        db.close()
-        return None
     profile = db.execute("SELECT * FROM user_profiles WHERE user_id = ?", (user_id,)).fetchone()
     if profile is None:
         db.execute("INSERT OR IGNORE INTO user_profiles (user_id) VALUES (?)", (user_id,))
@@ -58,8 +50,6 @@ def save_profile(user_id, profile):
     ))
     db.commit()
     db.close()
-
-
 
 def recommend_songs(profile, song_title, top_n):
     song_title = song_title.lower()

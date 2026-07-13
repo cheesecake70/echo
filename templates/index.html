@@ -25,6 +25,52 @@
         });
     }
 
+    // Handle loading more recommendations without page reload
+    function loadMoreReccos(form, event) {
+        event.preventDefault();
+        
+        const button = form.querySelector('button');
+        if (button) {
+            button.disabled = true;
+            button.textContent = "loading...";
+        }
+        
+        fetch('/', {
+            method: 'POST',
+            body: new FormData(form)
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Replace the song list innerHTML with the new complete list
+            const newSongList = doc.querySelector('.song-list');
+            const currentSongList = document.querySelector('.song-list');
+            if (newSongList && currentSongList) {
+                currentSongList.innerHTML = newSongList.innerHTML;
+            }
+            
+            // Replace the Show More form container innerHTML with the new one
+            const newShowMoreForm = doc.querySelector('.show-more-form-container');
+            const currentShowMoreForm = document.querySelector('.show-more-form-container');
+            if (currentShowMoreForm) {
+                if (newShowMoreForm) {
+                    currentShowMoreForm.innerHTML = newShowMoreForm.innerHTML;
+                } else {
+                    currentShowMoreForm.innerHTML = ''; // Hide button if no longer shown
+                }
+            }
+        })
+        .catch(err => {
+            console.error("Error loading more recommendations:", err);
+            if (button) {
+                button.disabled = false;
+                button.textContent = "show more";
+            }
+        });
+    }
+
     // Dropdown input logic: start suggesting after typing 1 or more characters
     document.addEventListener("DOMContentLoaded", function() {
         const input = document.getElementById('song-input');
@@ -127,11 +173,13 @@
 <!-- ===============================
      More recommendations button
      =============================== -->
-{% if show_more_button %}
-    <form method="POST" class="mt-4">
-        <input type="hidden" name="base_song" value="{{ selected_song }}">
-        <input type="hidden" name="top_n" value="{{ recommendations|length }}">
-        <button name="more" value="yes" class="btn-show-more-custom">show more</button>
-    </form>
-{% endif %}
+<div class="show-more-form-container">
+    {% if show_more_button %}
+        <form method="POST" class="mt-4" onsubmit="loadMoreReccos(this, event)">
+            <input type="hidden" name="base_song" value="{{ selected_song }}">
+            <input type="hidden" name="top_n" value="{{ recommendations|length }}">
+            <button name="more" value="yes" class="btn-show-more-custom">show more</button>
+        </form>
+    {% endif %}
+</div>
 {% endblock %}
