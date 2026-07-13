@@ -2,26 +2,61 @@
 
 {% block content %}
 <script>
-    function disablePair(form) {
-        const container = form.closest('.feedback-buttons');
+    // Handle Like/Dislike asynchronously without reloading the page
+    function submitFeedback(form, event) {
+        event.preventDefault();
+        
+        // Disable both buttons in the card right section immediately
+        const container = form.closest('.song-card-right');
         if (container) {
             container.querySelectorAll('button').forEach(b => b.disabled = true);
         }
+        
+        // POST feedback to server in background
+        fetch('/', {
+            method: 'POST',
+            body: new FormData(form)
+        }).then(response => {
+            if (!response.ok) {
+                console.error("Failed to submit feedback");
+            }
+        }).catch(err => {
+            console.error("Network error submitting feedback:", err);
+        });
     }
+
+    // Dropdown input logic: start suggesting after typing 1 or more characters
+    document.addEventListener("DOMContentLoaded", function() {
+        const input = document.getElementById('song-input');
+        if (input) {
+            // Remove autocomplete datalist initially
+            input.removeAttribute('list');
+            
+            input.addEventListener('input', function() {
+                if (this.value.length >= 1) {
+                    this.setAttribute('list', 'songs');
+                } else {
+                    this.removeAttribute('list');
+                }
+            });
+        }
+    });
 </script>
 
 <!-- ===============================
      Song input form (autocomplete)
      =============================== -->
-<form method="POST" class="mb-4">
+<form method="POST" class="mb-5 mt-5">
+    <label class="input-label" for="song-input">enter a song to get reccomendations</label>
     <input
         type="text"
+        id="song-input"
         name="song_title"
         list="songs"
         placeholder="Start typing a song name..."
         required
-        autocomplete="on"
-        class="form-control"
+        autocomplete="off"
+        class="form-control-light"
     >
 
     <datalist id="songs">
@@ -30,70 +65,73 @@
         {% endfor %}
     </datalist>
 
-    <button type="submit" class="btn btn-success mt-2">Get Recommendations</button>
+    <button type="submit" class="btn-get-reccos">get reccomendations</button>
 </form>
 
 <!-- Error message -->
 {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
+    <div class="alert-retro alert-danger-retro mb-4">{{ error }}</div>
 {% endif %}
 
 <!-- ===============================
      Recommendations section
      =============================== -->
 {% if recommendations %}
-    <h2>Recommended Songs</h2>
+    <h2 class="section-heading mt-5">reccomendations</h2>
 
-    {% for song in recommendations %}
-        <div class="card mb-3 p-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <strong>{{ song.title }}</strong>
-                    <a href="{{ song.link }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm rounded-circle ms-2"
-                       style="width: 38px; height: 38px; line-height: 18px; padding: 0; display: inline-flex; align-items: center; justify-content: center;"
-                       title="Play on YouTube" aria-label="Play on YouTube">▶</a>
-                    <span class="text-muted"> — {{ song.artist}}</span><br>
-                    <span>Similarity: {{ ((song.similarity * 100) | round(0)) | int }}%</span>
+    <div class="song-list">
+        {% for song in recommendations %}
+            <div class="song-card-retro">
+                <div class="song-card-left">
+                    <!-- Circular Play Button using play.png, hyperlinked directly to YouTube -->
+                    <a href="{{ song.link }}" target="_blank" rel="noopener noreferrer" class="song-play-icon" title="Play on YouTube" aria-label="Play on YouTube">
+                        <img src="{{ url_for('static', filename='images/play.png') }}" alt="Play">
+                    </a>
+                    <div class="song-info">
+                        <!-- Song Name Hyperlink directly to YouTube video -->
+                        <a href="{{ song.link }}" target="_blank" rel="noopener noreferrer" class="song-title-link">
+                            {{ song.title }} - {{ song.artist }}
+                        </a>
+                        <span class="song-similarity">similarity score - {{ ((song.similarity * 100) | round(0)) | int }}</span>
+                    </div>
                 </div>
-                <div class="d-flex gap-2 align-items-center">
-                    <form method="POST"
-                          class="{% if song.title in feedbacked_songs %}feedbacked{% endif %}"
-                          onsubmit="disablePair(this)">
+                <div class="song-card-right">
+                    <form method="POST" onsubmit="submitFeedback(this, event)">
                         <input type="hidden" name="rec_song_title" value="{{ song.title }}">
                         <input type="hidden" name="base_song" value="{{ selected_song }}">
                         <input type="hidden" name="top_n" value="{{ recommendations|length }}">
                         <input type="hidden" name="feedback" value="like">
-                        <button type="submit" class="btn btn-primary"
-                                {% if song.title in feedbacked_songs %}disabled{% endif %}>
-                            👍 Like
+                        <button type="submit" class="btn-feedback btn-like" {% if song.title in feedbacked_songs %}disabled{% endif %}>
+                            <!-- Like Icon using thumb.png -->
+                            <img src="{{ url_for('static', filename='images/thumb.png') }}" class="icon-retro" alt="Like">
+                            Like
                         </button>
                     </form>
-                    <form method="POST"
-                          class="{% if song.title in feedbacked_songs %}feedbacked{% endif %}"
-                          onsubmit="disablePair(this)">
+                    <form method="POST" onsubmit="submitFeedback(this, event)">
                         <input type="hidden" name="rec_song_title" value="{{ song.title }}">
                         <input type="hidden" name="base_song" value="{{ selected_song }}">
                         <input type="hidden" name="top_n" value="{{ recommendations|length }}">
                         <input type="hidden" name="feedback" value="dislike">
-                        <button type="submit" class="btn btn-danger"
-                                {% if song.title in feedbacked_songs %}disabled{% endif %}>
-                            👎 Dislike
+                        <button type="submit" class="btn-feedback btn-dislike" {% if song.title in feedbacked_songs %}disabled{% endif %}>
+                            <!-- Dislike Icon using thumb.png rotated 180 degrees via CSS -->
+                            <img src="{{ url_for('static', filename='images/thumb.png') }}" class="icon-retro icon-dislike" alt="Dislike">
+                            Dislike
                         </button>
                     </form>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 {% endif %}
 
 <!-- ===============================
      More recommendations button
      =============================== -->
 {% if show_more_button %}
-    <form method="POST" class="more-btn mt-3">
+    <form method="POST" class="mt-4">
         <input type="hidden" name="base_song" value="{{ selected_song }}">
         <input type="hidden" name="top_n" value="{{ recommendations|length }}">
-        <button name="more" value="yes" class="btn btn-secondary">Show more recommendations</button>
+        <button name="more" value="yes" class="btn-show-more-custom">show more</button>
     </form>
 {% endif %}
 {% endblock %}

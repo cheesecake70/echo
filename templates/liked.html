@@ -1,17 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="mb-4">My Liked Songs</h2>
+<h2 class="section-heading mb-4">my liked songs</h2>
 
 {% if liked_songs %}
-    <ul class="list-group">
+    <div class="song-list">
         {% for song in liked_songs %}
-            <li class="list-group-item">
-                <strong>{{ song.name }}</strong> — <em>{{ song.artist_name }}</em>
-            </li>
+            <div class="song-card-retro">
+                <div class="song-card-left">
+                    <!-- Circular play button image hyperlinked to YouTube -->
+                    <a href="{{ song.yt_link }}" target="_blank" rel="noopener noreferrer" class="song-play-icon" title="Play on YouTube" aria-label="Play on YouTube">
+                        <img src="{{ url_for('static', filename='images/play.png') }}" alt="Play">
+                    </a>
+                    <div class="song-info">
+                        <!-- Song Name Hyperlink directly to YouTube video -->
+                        <a href="{{ song.yt_link }}" target="_blank" rel="noopener noreferrer" class="song-title-link">
+                            {{ song.name }} - {{ song.artist_name }}
+                        </a>
+                        <span class="song-similarity">Liked Song</span>
+                    </div>
+                </div>
+                <div class="song-card-right">
+                    <div class="btn-feedback btn-like" style="cursor: default;">
+                        <img src="{{ url_for('static', filename='images/thumb.png') }}" class="icon-retro" alt="Like">
+                        Liked
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 {% else %}
-    <div class="alert alert-info">No liked songs yet. Like some recommendations and then come back.</div>
+    <div class="alert-retro alert-info-retro">no liked songs yet. search and like some recommendations and they will appear here!</div>
 {% endif %}
 {% endblock %}

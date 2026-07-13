@@ -1,0 +1,604 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --bg-color: #f2f0e5;
+  --dark-color: #252525;
+  --gray-text: #6a6a6a;
+  --like-color: #73f08b;
+  --dislike-color: #ff6e75;
+  --font-mono: 'Space Mono', 'Share Tech Mono', 'Courier New', monospace;
+  --border-thick: 3px solid #252525;
+  --shadow-retro: 4px 4px 0px 0px #252525;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  font-family: var(--font-mono);
+  color: var(--dark-color);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation Header - Centered to match page width grids */
+.navigation {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1360px;
+  height: 164px;
+  background-color: transparent;
+  z-index: 100;
+}
+
+body:has(.landing-page-wrapper) .navigation {
+  max-width: 1440px;
+}
+
+.brand-logo-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 148px;
+  height: 164px;
+  object-fit: cover;
+  pointer-events: none;
+}
+/* 1. Define the rotation rule */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.rotate-me {
+  animation: spin 4s linear infinite;
+}
+
+
+.brand-name {
+  position: absolute;
+  top: 58px;
+  left: 128px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--dark-color);
+  text-decoration: none;
+  line-height: 48px;
+  white-space: nowrap;
+  margin-left: 50px;
+}
+
+.brand-name:hover {
+  opacity: 0.8;
+}
+
+.nav-items {
+  position: absolute;
+  top: 56px;
+  right: 80px;
+  display: inline-flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.nav-link-custom {
+  font-size: 20px;
+  color: var(--dark-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.nav-link-custom:hover {
+  opacity: 0.7;
+}
+
+/* Landing Page Wrapper (Centered 1440px Figma Frame) */
+.landing-page-wrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1440px;
+  height: 100vh;
+  overflow: visible; /* Allows background curves to overflow screen edges cleanly */
+}
+
+/* Hide brand logo and brand name on the landing page */
+body:has(.landing-page-wrapper) .brand-logo-img,
+body:has(.landing-page-wrapper) .brand-name {
+  display: none;
+}
+
+/* Background vinyl records positioned to keep smooth circular crop curves */
+.landing-vinyl-left {
+  position: absolute;
+  top: 0;
+
+  left:0;
+  width: 738px;
+  height: 738px;
+  border-radius: 50%;
+  object-fit: contain;
+  z-index: 1;
+  pointer-events: none;
+  animation: slideInLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.landing-vinyl-right {
+  position: absolute;
+  top: 271px;
+  left: 784px;
+  width: 1216px;
+  height: 1216px;
+  border-radius: 50%;
+  object-fit: contain;
+  z-index: 1;
+  pointer-events: none;
+  animation: slideInRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translate(-200px, -200px);
+    opacity: 0.3;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translate(200px, 200px);
+    opacity: 0.3;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+/* Landing Page Copy & Content Layout positioned to Figma specs */
+.discover-music-that {
+  position: absolute;
+  top: 271px;
+  left: 529px;
+  width: 844px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  color: var(--dark-color);
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: 48px;
+  margin: 0;
+  z-index: 10;
+}
+
+.discover-music-that em {
+  font-style: italic;
+}
+
+.landing-title-large {
+  position: absolute;
+  top: 340px;
+  left: 282px;
+  width: 844px;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  color: var(--dark-color);
+  font-size: 200px;
+  letter-spacing: -4px;
+  line-height: normal;
+  margin: 0;
+  z-index: 10;
+}
+
+.cassette-wrapper {
+  position: absolute;
+  top: 478px;
+  left: 230px;
+  width: 641px;
+  height: 641px;
+  z-index: 10;
+}
+
+.cassette-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.cassette-image:hover {
+  transform: scale(1.03);
+}
+
+/* Retro Buttons */
+.btn-retro {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--bg-color);
+  background-color: var(--dark-color);
+  border: var(--border-thick);
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-retro:hover {
+  background-color: #3b3b3b;
+}
+
+.btn-retro:active {
+  background-color: #1a1a1a;
+}
+
+/* Dark Forms & Inputs (Login/Register Card - expanded size matching Mockup 2) */
+.form-control-dark {
+  width: 100%;
+  background-color: var(--dark-color);
+  border: var(--border-thick);
+  border-radius: 20px;
+  padding: 20px 24px;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  color: var(--bg-color); /* Cream text */
+  outline: none;
+  margin-bottom: 30px;
+}
+
+.form-control-dark::placeholder {
+  color: #6a6a6a;
+}
+
+.btn-submit-auth {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--bg-color);
+  background-color: var(--dark-color);
+  border: var(--border-thick);
+  border-radius: 20px; /* Same as username and password fields */
+  padding: 16px 40px;
+  cursor: pointer;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin: 10px auto 0 auto;
+}
+
+.btn-submit-auth:hover {
+  background-color: #3b3b3b;
+}
+
+.btn-submit-auth:active {
+  background-color: #1a1a1a;
+}
+
+.btn-get-reccos {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--bg-color);
+  background-color: var(--dark-color);
+  border: var(--border-thick);
+  border-radius: 12px; /* Same as song cards / song name enter */
+  padding: 16px 40px;
+  cursor: pointer;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin: 10px auto 0 auto;
+}
+
+.btn-get-reccos:hover {
+  background-color: #3b3b3b;
+}
+
+.btn-get-reccos:active {
+  background-color: #1a1a1a;
+}
+
+.btn-show-more-custom {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--bg-color);
+  background-color: var(--dark-color);
+  border: var(--border-thick);
+  border-radius: 12px; /* Same as song cards / song name enter */
+  padding: 16px 40px;
+  cursor: pointer;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin: 20px auto 0 auto;
+}
+
+.btn-show-more-custom:hover {
+  background-color: #3b3b3b;
+}
+
+.btn-show-more-custom:active {
+  background-color: #1a1a1a;
+}
+
+/* Light Forms & Inputs (Recommendations Search - expanded size matching Mockup 3) */
+.form-control-light {
+  width: 100%;
+  background-color: var(--bg-color);
+  border: var(--border-thick);
+  border-radius: 8px;
+  padding: 20px 24px;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  color: var(--dark-color);
+  outline: none;
+  margin-bottom: 24px;
+}
+
+/* App Container Layout (Wide container to prevent cards from being small) */
+.app-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1360px; /* Expands width to match mockup spacing */
+  margin: 0 auto;
+  padding: 180px 40px 80px 40px; /* Pushes content down below navigation bar */
+  flex: 1;
+}
+
+/* Adjust landing page container so it isn't pushed down by the container padding */
+body:has(.landing-page-wrapper) .app-container {
+  padding: 0;
+  max-width: none;
+}
+
+/* Title & Forms */
+h1, h2, .section-heading {
+  font-size: 40px;
+  font-weight: 700;
+  margin-top: 48px;
+  margin-bottom: 24px;
+}
+
+.input-label {
+  font-size: 32px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+/* Recommendation Song Cards (Expanded width card layout) */
+.song-card-retro {
+  border: var(--border-thick);
+  border-radius: 12px;
+  background-color: var(--bg-color);
+  padding: 30px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+  width: 100%;
+}
+
+/* Stagger card load animations */
+.song-card-retro:nth-child(1) { animation-delay: 0.05s; }
+.song-card-retro:nth-child(2) { animation-delay: 0.15s; }
+.song-card-retro:nth-child(3) { animation-delay: 0.25s; }
+.song-card-retro:nth-child(4) { animation-delay: 0.35s; }
+.song-card-retro:nth-child(5) { animation-delay: 0.45s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.song-card-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.song-play-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.song-play-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.song-play-icon:hover {
+  transform: scale(1.08);
+}
+
+.song-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.song-title-link {
+  color: var(--dark-color);
+  text-decoration: none;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.song-title-link:hover {
+  text-decoration: underline;
+}
+
+.song-similarity {
+  font-size: 25px;
+  color: var(--gray-text);
+  margin-top: 6px;
+}
+
+.song-card-right {
+  display: flex;
+  gap: 24px;
+}
+
+/* Like & Dislike Buttons (Using your thumb.png) */
+.btn-feedback {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--dark-color);
+  border: var(--border-thick);
+  border-radius: 8px;
+  padding: 14px 28px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.1s ease;
+}
+
+.icon-retro {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.icon-dislike {
+  transform: rotate(180deg);
+}
+
+.btn-like {
+  background-color: var(--like-color);
+}
+
+.btn-like:hover:not(:disabled) {
+  background-color: #5ce677;
+}
+
+.btn-dislike {
+  background-color: var(--dislike-color);
+}
+
+.btn-dislike:hover:not(:disabled) {
+  background-color: #ff555e;
+}
+
+.btn-feedback:active:not(:disabled) {
+  background-color: #cccccc;
+}
+
+.btn-feedback:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Alert modifications */
+.alert-retro {
+  background-color: var(--bg-color);
+  border: var(--border-thick);
+  border-radius: 8px;
+  padding: 20px 24px;
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+.alert-danger-retro {
+  border-color: var(--dislike-color);
+  background-color: #fff0f0;
+}
+.alert-info-retro {
+  border-color: var(--dark-color);
+}
+
+/* Utility to center forms */
+.auth-card {
+  max-width: 1047px; /* Matches Figma mockup 2 username/password input size */
+  margin: 60px auto 0 auto;
+}
+
+.btn-show-more {
+  margin-top: 20px;
+}
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+  .navigation {
+    padding: 24px 30px;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .app-container {
+    padding: 180px 20px 60px 20px;
+  }
+  .song-card-retro {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .song-card-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .landing-title-large {
+    font-size: 120px;
+  }
+}

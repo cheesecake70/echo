@@ -24,9 +24,17 @@ def load_songs():
 
 def load_profile(user_id):
     db = get_db_connection()
+    user = db.execute("SELECT id FROM users WHERE id = ?", (user_id,)).fetchone()
+    if user is None:
+        db.close()
+        return None
     profile = db.execute("SELECT * FROM user_profiles WHERE user_id = ?", (user_id,)).fetchone()
+    if profile is None:
+        db.execute("INSERT OR IGNORE INTO user_profiles (user_id) VALUES (?)", (user_id,))
+        db.commit()
+        profile = db.execute("SELECT * FROM user_profiles WHERE user_id = ?", (user_id,)).fetchone()
     db.close()
-    return dict(profile)
+    return dict(profile) if profile else None
 
 def save_profile(user_id, profile):
     db = get_db_connection()
@@ -126,7 +134,7 @@ def register_user(username, password):
     conn = get_db_connection()
     try:
         conn.execute("INSERT INTO users (username, password) VALUES (?, ?)",
-                     (username, generate_password_hash(password)))
+                     (username, generate_password_hash(password, method='pbkdf2:sha256')))
         user_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
         conn.execute("INSERT INTO user_profiles (user_id) VALUES (?)", (user_id,))
         conn.commit()

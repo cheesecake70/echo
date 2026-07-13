@@ -9,7 +9,8 @@ from utils import (
     update_profile,
     get_liked_songs,
     register_user,
-    verify_password
+    verify_password,
+    get_db_connection
 )
 
 # configure application
@@ -20,6 +21,12 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if "user_id" not in session:
+            return redirect(url_for("login"))
+        db = get_db_connection()
+        user = db.execute("SELECT id FROM users WHERE id = ?", (session["user_id"],)).fetchone()
+        db.close()
+        if user is None:
+            session.clear()
             return redirect(url_for("login"))
         return f(*args, **kwargs)
     return decorated_function
@@ -76,13 +83,14 @@ def logout():
     return redirect(url_for("login"))
  
  
-
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
     songs = load_songs()
     profile = load_profile(session["user_id"])
-
+    if profile is None:
+        session.clear()
+        return redirect(url_for("login"))
 
     song_titles = [song["name"] for song in songs]
 
@@ -172,8 +180,7 @@ def index():
 def liked():
     liked_songs = get_liked_songs(session["user_id"])
     return render_template("liked.html", liked_songs=liked_songs)
-    
 
 # run
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

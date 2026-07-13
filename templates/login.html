@@ -1,27 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div>
-  {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
-  {% endif %}
-  <form method="POST">
-    <div class="form-group">
-      <label>Username</label>
-      <input type="text" class="form-control" name="Username" aria-describedby="emailHelp" placeholder="Enter username" >
-      
-    </div>
-    <div class="form-group">
-      <label for="exampleInputPassword1">Password</label>
-      <input type="password" class="form-control" name="Password" placeholder="Password">
-    </div>
-    <br>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-  <p class="mt-3 text-center">
-              No account? <a href="{{ url_for('register') }}">Register here</a>
-  </p>
+<div class="auth-card">
+    {% if error %}
+        <div class="alert-retro alert-danger-retro mb-4">{{ error }}</div>
+    {% endif %}
+    
+    <form method="POST" class="text-center">
+        <div class="mb-4 text-start">
+            <label class="input-label">enter username</label>
+            <input type="text" class="form-control-dark" name="Username" placeholder="Enter username" required>
+        </div>
+        <div class="mb-4 text-start">
+            <label class="input-label">enter password</label>
+            <input type="password" class="form-control-dark" name="Password" placeholder="Password" required>
+        </div>
+        
+        <button type="submit" class="btn-submit-auth w-100 mt-2" style="border-radius: 20px;">submit</button>
+    </form>
+    
+    <p class="mt-4 text-center fs-5">
+        no account? <a href="{{ url_for('register') }}" class="text-decoration-underline text-dark">register here</a>
+    </p>
 </div>
-
-
 {% endblock %}
