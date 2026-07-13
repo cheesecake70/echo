@@ -11,7 +11,6 @@
   --shadow-retro: 4px 4px 0px 0px #252525;
 }
 
-/* Base Styles */
 * {
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
@@ -30,7 +29,6 @@ body {
   flex-direction: column;
 }
 
-/* Navigation Header - Centered to match page width grids */
 .navigation {
   position: absolute;
   top: 0;
@@ -43,10 +41,6 @@ body {
   z-index: 100;
 }
 
-body:has(.landing-page-wrapper) .navigation {
-  max-width: 1440px;
-}
-
 .brand-logo-img {
   position: absolute;
   top: 0;
@@ -56,7 +50,8 @@ body:has(.landing-page-wrapper) .navigation {
   object-fit: cover;
   pointer-events: none;
 }
-/* 1. Define the rotation rule */
+
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -66,11 +61,9 @@ body:has(.landing-page-wrapper) .navigation {
   }
 }
 
-
 .rotate-me {
   animation: spin 4s linear infinite;
 }
-
 
 .brand-name {
   position: absolute;
@@ -114,132 +107,6 @@ body:has(.landing-page-wrapper) .navigation {
   opacity: 0.7;
 }
 
-/* Landing Page Wrapper (Centered 1440px Figma Frame) */
-.landing-page-wrapper {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1440px;
-  height: 100vh;
-  overflow: visible; /* Allows background curves to overflow screen edges cleanly */
-}
-
-/* Hide brand logo and brand name on the landing page */
-body:has(.landing-page-wrapper) .brand-logo-img,
-body:has(.landing-page-wrapper) .brand-name {
-  display: none;
-}
-
-/* Background vinyl records positioned to keep smooth circular crop curves */
-.landing-vinyl-left {
-  position: absolute;
-  top: 0;
-
-  left:0;
-  width: 738px;
-  height: 738px;
-  border-radius: 50%;
-  object-fit: contain;
-  z-index: 1;
-  pointer-events: none;
-  animation: slideInLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-
-.landing-vinyl-right {
-  position: absolute;
-  top: 271px;
-  left: 784px;
-  width: 1216px;
-  height: 1216px;
-  border-radius: 50%;
-  object-fit: contain;
-  z-index: 1;
-  pointer-events: none;
-  animation: slideInRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-
-@keyframes slideInLeft {
-  from {
-    transform: translate(-200px, -200px);
-    opacity: 0.3;
-  }
-  to {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translate(200px, 200px);
-    opacity: 0.3;
-  }
-  to {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-}
-
-/* Landing Page Copy & Content Layout positioned to Figma specs */
-.discover-music-that {
-  position: absolute;
-  top: 271px;
-  left: 529px;
-  width: 844px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  font-family: var(--font-mono);
-  font-weight: 400;
-  color: var(--dark-color);
-  font-size: 32px;
-  letter-spacing: 0;
-  line-height: 48px;
-  margin: 0;
-  z-index: 10;
-}
-
-.discover-music-that em {
-  font-style: italic;
-}
-
-.landing-title-large {
-  position: absolute;
-  top: 340px;
-  left: 282px;
-  width: 844px;
-  font-family: var(--font-mono);
-  font-weight: 400;
-  color: var(--dark-color);
-  font-size: 200px;
-  letter-spacing: -4px;
-  line-height: normal;
-  margin: 0;
-  z-index: 10;
-}
-
-.cassette-wrapper {
-  position: absolute;
-  top: 478px;
-  left: 230px;
-  width: 641px;
-  height: 641px;
-  z-index: 10;
-}
-
-.cassette-image {
-  width: 100%;
-  height: auto;
-  border-radius: 12px;
-  transition: transform 0.2s ease;
-}
-
-.cassette-image:hover {
-  transform: scale(1.03);
-}
-
-/* Retro Buttons */
 .btn-retro {
   font-family: var(--font-mono);
   font-size: 18px;
@@ -266,7 +133,6 @@ body:has(.landing-page-wrapper) .brand-name {
   background-color: #1a1a1a;
 }
 
-/* Dark Forms & Inputs (Login/Register Card - expanded size matching Mockup 2) */
 .form-control-dark {
   width: 100%;
   background-color: var(--dark-color);
@@ -275,7 +141,7 @@ body:has(.landing-page-wrapper) .brand-name {
   padding: 20px 24px;
   font-family: var(--font-mono);
   font-size: 24px;
-  color: var(--bg-color); /* Cream text */
+  color: var(--bg-color); 
   outline: none;
   margin-bottom: 30px;
 }
@@ -291,7 +157,7 @@ body:has(.landing-page-wrapper) .brand-name {
   color: var(--bg-color);
   background-color: var(--dark-color);
   border: var(--border-thick);
-  border-radius: 20px; /* Same as username and password fields */
+  border-radius: 20px; 
   padding: 16px 40px;
   cursor: pointer;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
@@ -318,7 +184,7 @@ body:has(.landing-page-wrapper) .brand-name {
   color: var(--bg-color);
   background-color: var(--dark-color);
   border: var(--border-thick);
-  border-radius: 12px; /* Same as song cards / song name enter */
+  border-radius: 12px; 
   padding: 16px 40px;
   cursor: pointer;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
@@ -345,7 +211,7 @@ body:has(.landing-page-wrapper) .brand-name {
   color: var(--bg-color);
   background-color: var(--dark-color);
   border: var(--border-thick);
-  border-radius: 12px; /* Same as song cards / song name enter */
+  border-radius: 12px; 
   padding: 16px 40px;
   cursor: pointer;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
@@ -365,7 +231,6 @@ body:has(.landing-page-wrapper) .brand-name {
   background-color: #1a1a1a;
 }
 
-/* Light Forms & Inputs (Recommendations Search - expanded size matching Mockup 3) */
 .form-control-light {
   width: 100%;
   background-color: var(--bg-color);
@@ -379,24 +244,16 @@ body:has(.landing-page-wrapper) .brand-name {
   margin-bottom: 24px;
 }
 
-/* App Container Layout (Wide container to prevent cards from being small) */
 .app-container {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 1360px; /* Expands width to match mockup spacing */
+  max-width: 1360px; /
   margin: 0 auto;
-  padding: 180px 40px 80px 40px; /* Pushes content down below navigation bar */
+  padding: 180px 40px 80px 40px; 
   flex: 1;
 }
 
-/* Adjust landing page container so it isn't pushed down by the container padding */
-body:has(.landing-page-wrapper) .app-container {
-  padding: 0;
-  max-width: none;
-}
-
-/* Title & Forms */
 h1, h2, .section-heading {
   font-size: 40px;
   font-weight: 700;
@@ -410,7 +267,6 @@ h1, h2, .section-heading {
   display: block;
 }
 
-/* Recommendation Song Cards (Expanded width card layout) */
 .song-card-retro {
   border: var(--border-thick);
   border-radius: 12px;
@@ -427,7 +283,6 @@ h1, h2, .section-heading {
   width: 100%;
 }
 
-/* Stagger card load animations */
 .song-card-retro:nth-child(1) { animation-delay: 0.05s; }
 .song-card-retro:nth-child(2) { animation-delay: 0.15s; }
 .song-card-retro:nth-child(3) { animation-delay: 0.25s; }
@@ -500,7 +355,6 @@ h1, h2, .section-heading {
   gap: 24px;
 }
 
-/* Like & Dislike Buttons (Using your thumb.png) */
 .btn-feedback {
   font-family: var(--font-mono);
   font-size: 22px;
@@ -553,7 +407,6 @@ h1, h2, .section-heading {
   cursor: not-allowed;
 }
 
-/* Alert modifications */
 .alert-retro {
   background-color: var(--bg-color);
   border: var(--border-thick);
@@ -570,9 +423,8 @@ h1, h2, .section-heading {
   border-color: var(--dark-color);
 }
 
-/* Utility to center forms */
 .auth-card {
-  max-width: 1047px; /* Matches Figma mockup 2 username/password input size */
+  max-width: 1047px; 
   margin: 60px auto 0 auto;
 }
 
@@ -580,7 +432,6 @@ h1, h2, .section-heading {
   margin-top: 20px;
 }
 
-/* Responsive Overrides */
 @media (max-width: 768px) {
   .navigation {
     padding: 24px 30px;
